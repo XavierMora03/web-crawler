@@ -27,12 +27,30 @@ function getURLsFromHTML(htmlBody, baseURl) {
       console.log("error pana");
       topush = "";
     }
-    console.log(topush);
     urls.push(topush);
   }
   return urls;
 }
+
+async function crawlPage(currUrl) {
+  console.log(`actively crawling: ${currUrl}`);
+
+  const resp = await fetch(currUrl);
+  var texto = await resp.text();
+  if (resp.status > 399) {
+    console.log(
+      "Error when trying to acces to ",
+      currUrl,
+      "status code: ",
+      resp.status
+    );
+    return;
+  }
+  const sitesCrawled = getURLsFromHTML(texto, currUrl);
+  return sitesCrawled;
+}
 module.exports = {
+  crawlPage,
   normalizeURL,
   getURLsFromHTML,
 };
